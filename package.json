@@ -1,0 +1,153 @@
+{
+  "name": "new-log-viewer",
+  "version": "0.0.0",
+  "description": "Tool that can be used to view logs, tailored for viewing logs formats specified by YScope.",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "webpack serve --open --config webpack.dev.js"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y-scope/yscope-log-viewer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/y-scope/yscope-log-viewer/issues"
+  },
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.46.0-build2",
+    "axios": "^1.7.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "xxhash-wasm": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
+    "babel-loader": "^9.1.3",
+    "eslint-config-yscope": "latest",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-import-newlines": "^1.4.0",
+    "html-webpack-plugin": "^5.6.0",
+    "react-refresh": "^0.14.2",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.12.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4",
+    "webpack-merge": "^5.10.0",
+    "worker-loader": "^3.0.8"
+  },
+  "eslintConfig": {
+    "extends": [
+      "yscope/react"
+    ],
+    "ignorePatterns": [
+      "customized-packages/"
+    ],
+    "plugins": [
+      "import-newlines"
+    ],
+    "rules": {
+      "import-newlines/enforce": [
+        "error",
+        {
+          "items": 1
+        }
+      ],
+      "react/boolean-prop-naming": [
+        "error",
+        {
+          "rule": "^(is|has|disable|enable)[A-Za-z0-9]*",
+          "validateNested": false
+        }
+      ]
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.tsx"
+        ],
+        "rules": {
+          "max-lines-per-function": [
+            "error",
+            {
+              "max": 120,
+              "skipBlankLines": true,
+              "skipComments": true
+            }
+          ]
+        }
+      },
+      {
+        "files": [
+          "*.ts",
+          "*.tsx"
+        ],
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+          "project": [
+            "./tsconfig.json"
+          ]
+        },
+        "settings": {
+          "import/resolver": {
+            "typescript": {
+              "alwaysTryTypes": true,
+              "project": "tsconfig.json"
+            }
+          }
+        },
+        "plugins": [
+          "@typescript-eslint"
+        ],
+        "extends": [
+          "plugin:@typescript-eslint/strict-type-checked"
+        ],
+        "rules": {
+          "jsdoc/no-types": [
+            "warn"
+          ],
+          "jsdoc/check-types": [
+            "off"
+          ],
+          "jsdoc/require-param-type": [
+            "off"
+          ],
+          "jsdoc/require-property-type": [
+            "off"
+          ],
+          "jsdoc/require-returns": [
+            "off"
+          ],
+          "jsdoc/require-returns-type": [
+            "off"
+          ],
+          "no-shadow": [
+            "off"
+          ],
+          "@typescript-eslint/no-shadow": [
+            "error"
+          ],
+          "@typescript-eslint/restrict-template-expressions": [
+            "error",
+            {
+              "allowNumber": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
