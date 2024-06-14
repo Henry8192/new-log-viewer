@@ -1,4 +1,9 @@
-import {createContext, useContext, useEffect, useState} from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 
 
 interface UrlContextProps {
@@ -7,9 +12,14 @@ interface UrlContextProps {
     copyToClipboard: (searchParamSet: Record<string, string | null>, hashParamSet: Record<string, string | null>) => void;
 }
 
-const UrlContext = createContext <UrlContextProps> ({} as UrlContextProps);
+const UrlContext = createContext <UrlContextProps>({} as UrlContextProps);
 
 
+/**
+ *
+ * @param root0
+ * @param root0.children
+ */
 const UrlContextProvider = ({children}) => {
     const [hashParam, setHashParam] = useState<string>(window.location.hash.substring(1));
     useEffect(() => {
@@ -18,8 +28,8 @@ const UrlContextProvider = ({children}) => {
 
     const setSearchParamSetHelper = (searchParamSet: Record<string, string | null>) => {
         const newSearchParam = new URLSearchParams(window.location.search.substring(1));
-        const filePath = searchParamSet['filePath'];
-        delete searchParamSet['filePath'];
+        const {filePath} = searchParamSet;
+        delete searchParamSet.filePath;
 
         for (const [key, value] of Object.entries(searchParamSet)) {
             if (null === value) {
@@ -29,16 +39,21 @@ const UrlContextProvider = ({children}) => {
             }
         }
         if (filePath) {
-            newSearchParam.set('filePath', filePath);
+            newSearchParam.set("filePath", filePath);
         }
+
         return newSearchParam;
-    }
+    };
 
     const setSearchParamSet = (searchParamSet: Record<string, string | null>) => {
         const newUrl = new URL(window.location.href);
         newUrl.search = setSearchParamSetHelper(searchParamSet).toString();
-        window.history.pushState({}, '', newUrl.toString());
-    }
+        if (!(/%23|%26/).test(newUrl.search)) {
+            newUrl.search = decodeURIComponent(newUrl.search);
+        }
+        window.history.pushState({}, "", newUrl.toString());
+    };
+
     const setHashParamSetHelper = (hashParamSet: Record<string, string | null>) => {
         const newHashParam = new URLSearchParams(hashParam);
         for (const [key, value] of Object.entries(hashParamSet)) {
@@ -48,43 +63,49 @@ const UrlContextProvider = ({children}) => {
                 newHashParam.set(key, value);
             }
         }
+
         return newHashParam;
     };
 
     const setHashParamSet = (hashParamSet: Record<string, string | null>) => {
         const newUrl = new URL(window.location.href);
         newUrl.hash = setHashParamSetHelper(hashParamSet).toString();
-        window.history.pushState({}, '', newUrl.toString());
-    }
+        window.history.pushState({}, "", newUrl.toString());
+    };
 
     const copyToClipboard = (searchParamSet: Record<string, string | null>, hashParamSet: Record<string, string | null>) => {
         const newUrl = new URL(window.location.href);
         newUrl.search = setSearchParamSetHelper(searchParamSet).toString();
         newUrl.hash = setHashParamSetHelper(hashParamSet).toString();
         navigator.clipboard.writeText(newUrl.toString());
-    }
+    };
 
     return (
         <UrlContext.Provider value={{setSearchParamSet, setHashParamSet, copyToClipboard}}>
             {children}
         </UrlContext.Provider>
     );
+};
 
-}
-
+/**
+ *
+ */
 const UserComponent = () => {
-    const {setSearchParamSet} = useContext(UrlContext);
+    const {setSearchParamSet, setHashParamSet, copyToClipboard} = useContext(UrlContext);
+    setHashParamSet({logEventIdx: "2"});
+    setSearchParamSet({filePath: "path/to/filePath", seek: "end"});
+    copyToClipboard({filePath: "path/to/file", seek: "start"}, {logEventIdx: "1"});
+};
 
-}
+/**
+ *
+ */
 const App = () => {
     return (
         <>
             <UrlContextProvider>
                 <UserComponent/>
             </UrlContextProvider>
-            <StateContextProvider>
-                <Viewer/>
-            </StateContextProvider>
         </>
     );
 };
